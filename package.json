@@ -1,0 +1,52 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "turbo run start",
+    "clean": "turbo run clean",
+    "build": "yarn dlx turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mjs,js,jsx}\"",
+    "test": "turbo run test",
+    "postinstall": "husky install && chmod ug+x .husky/*"
+  },
+  "devDependencies": {
+    "@babel/traverse": "^7.23.6",
+    "@dagger.io/dagger": "^0.8.4",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/amqplib": "^0",
+    "@types/babel__traverse": "^7",
+    "@types/jest": "^29.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.16.0",
+    "axios": "^1.5.0",
+    "eslint": "^8.52.0",
+    "eslint-config-custom": "*",
+    "eslint-plugin-custom": "*",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-no-only-tests": "^3.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.0.2",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "tsconfig": "*",
+    "typescript": "^5.2.2"
+  },
+  "name": "shippping-test",
+  "workspaces": [
+    "apps/*"
+  ],
+  "volta": {
+    "node": "20.9.0",
+    "yarn": "4.0.1"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,mjs,js,jsx}": [
+      "eslint --fix --ignore-pattern /tools/*"
+    ],
+    "**/*.{ts,tsx,md,mjs,js,jsx}": [
+      "prettier --write"
+    ]
+  }
+}
