@@ -1,3 +1,4 @@
+import twMerge from "@/utils/twMerge";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={twMerge(inter.className, "bg-blue-100")}>{children}</body>
     </html>
   );
 }

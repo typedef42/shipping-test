@@ -43,4 +43,26 @@ describe("CustomRouteService", () => {
       expect(ports).toEqual(expectedPorts);
     });
   });
+
+  describe("getBestRoute", () => {
+    it("should return the best route between two ports", async () => {
+      const portSources = [
+        { name: "Ho Chi Minh City", country: CountryEnum.VIETNAM },
+        { name: "Haiphong", country: CountryEnum.VIETNAM },
+        { name: "Da Nang", country: CountryEnum.VIETNAM },
+      ];
+      const portDestinations = [
+        { name: "Marseille", country: CountryEnum.FRANCE },
+        { name: "Le Havre", country: CountryEnum.FRANCE },
+        { name: "Bordeaux", country: CountryEnum.FRANCE },
+      ];
+      const expectedRoute = {
+        sourcePort: { name: "Haiphong", country: CountryEnum.VIETNAM },
+        destPort: { name: "Le Havre", country: CountryEnum.FRANCE },
+        distance: 9388.9,
+      };
+      const result = await service.getBestRoute(portSources, portDestinations);
+      expect(result).toMatchObject(expectedRoute);
+    });
+  });
 });
