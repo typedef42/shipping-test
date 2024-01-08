@@ -51,4 +51,26 @@ describe("PortController (e2e)", () => {
         });
     });
   });
+
+  describe("/port/available/:country", () => {
+    it("should return a list of ports available for a given country", () => {
+      return request(app.getHttpServer())
+        .get("/port/available/ITALY")
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+
+    it("should return 404 if country is not found", () => {
+      return request(app.getHttpServer())
+        .get("/port/available/nonExistingCountry")
+        .expect(404)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.message).toBe("Country not found");
+        });
+    });
+  });
 });

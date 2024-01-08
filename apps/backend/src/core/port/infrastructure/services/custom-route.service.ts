@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
+import { FindBestRouteResponseDto } from "src/core/shipment/application/commands/find-best-route/find-best-route.response.dto";
+
 import { RouteService } from "../../application/services/route.service";
 import { Port } from "../../domain/entities/port";
 import { CountryEnum } from "../../domain/enums/country.enum";
@@ -228,5 +230,28 @@ export class CustomRouteService implements RouteService {
 
   async availablePorts(country: CountryEnum): Promise<Port[]> {
     return availablePorts[country];
+  }
+
+  async getBestRoute(portSources: Array<Port>, portDestinations: Array<Port>): Promise<FindBestRouteResponseDto> {
+    let minDistance = Infinity;
+    let resultPortSource: Port = portSources[0];
+    let resultPortDes: Port = portDestinations[0];
+    const distanceCache: Record<string, number> = {};
+
+    for (const portSource of portSources) {
+      for (const portDest of portDestinations) {
+        const portPair = JSON.stringify([portSource, portDest]);
+        if (!distanceCache[portPair]) {
+          distanceCache[portPair] = await this.getDistance(portSource, portDest);
+        }
+        const distance = distanceCache[portPair];
+        if (distance < minDistance) {
+          minDistance = distance;
+          resultPortSource = portSource;
+          resultPortDes = portDest;
+        }
+      }
+    }
+    return { distance: minDistance, sourcePort: resultPortSource, destPort: resultPortDes };
   }
 }
