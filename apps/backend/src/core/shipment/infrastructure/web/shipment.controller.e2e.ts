@@ -36,7 +36,7 @@ describe("ShipmentController (e2e)", () => {
         .get("/shipment/find-best-route/nonExistingCountry/FRANCE")
         .expect(400)
         .expect(({ body }) => {
-          expect(body).toHaveProperty("message", "Invalid departure country: nonExistingCountry");
+          expect(body).toHaveProperty("message", "Country nonExistingCountry not found");
         });
     });
 

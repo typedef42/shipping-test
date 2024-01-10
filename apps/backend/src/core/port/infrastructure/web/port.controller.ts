@@ -3,14 +3,16 @@ import { Controller, Get, HttpException, Inject, Param } from "@nestjs/common";
 
 import { PORT_REPOSITORY, PortRepository } from "../../application/persistence/port.repository";
 import { ROUTE_SERVICE, RouteService } from "../../application/services/route.service";
-import { Port } from "../../domain/entities/port";
 import { CountryEnum } from "../../domain/enums/country.enum";
+import { PortResponseDto } from "../../dtos/port.response.dto";
+import { PortMapper } from "../../port.mapper";
 
 @Controller("port")
 export class PortController {
   constructor(
     @Inject(PORT_REPOSITORY) private readonly portRepository: PortRepository,
     @Inject(ROUTE_SERVICE) private readonly routeService: RouteService,
+    private readonly mapper: PortMapper,
   ) {}
 
   @Get("/distance/:portNameA/:portNameB")
@@ -31,12 +33,13 @@ export class PortController {
   }
 
   @Get("/list")
-  async listPorts(): Promise<Array<Port>> {
-    return this.portRepository.list();
+  async listPorts(): Promise<Array<PortResponseDto>> {
+    const listPort = await this.portRepository.list();
+    return this.mapper.toResponses(listPort);
   }
 
   @Get("/available/:country")
-  async availablePorts(@Param("country") country: string): Promise<Array<Port>> {
+  async availablePorts(@Param("country") country: string): Promise<Array<PortResponseDto>> {
     const countryEnum = CountryEnum[country as keyof typeof CountryEnum];
     if (!countryEnum) {
       throw new HttpException("Country not found", 404);
@@ -44,7 +47,7 @@ export class PortController {
 
     try {
       const ports = await this.routeService.availablePorts(countryEnum);
-      return ports;
+      return this.mapper.toResponses(ports);
     } catch (error) {
       throw new HttpException("Unable to compute distance between ports due to missing or invalid data", 403);
     }

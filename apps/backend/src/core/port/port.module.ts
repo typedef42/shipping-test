@@ -5,6 +5,7 @@ import { ROUTE_SERVICE } from "./application/services/route.service";
 import { InMemPortRepository } from "./infrastructure/persistence/in-mem.port.repository";
 import { CustomRouteService } from "./infrastructure/services/custom-route.service";
 import { PortController } from "./infrastructure/web/port.controller";
+import { PortMapper } from "./port.mapper";
 
 const repositories: Provider[] = [
   {
@@ -20,10 +21,12 @@ const services: Provider[] = [
   },
 ];
 
+const mapper: Provider[] = [PortMapper];
+
 const controllers = [PortController];
 
 @Module({
-  providers: [...services, ...repositories],
+  providers: [...services, ...repositories, ...mapper],
   exports: [...services],
   controllers: [...controllers],
 })

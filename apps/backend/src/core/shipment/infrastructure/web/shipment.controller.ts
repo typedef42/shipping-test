@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { BadRequestException, Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, HttpException, Param } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
 import { CountryEnum } from "src/core/port/domain/enums/country.enum";
-import { validateCountries } from "src/utils/country.utils";
 
 import { FindBestRouteCommand } from "../../application/commands/find-best-route/find-best-route.command";
 import { FindBestRouteResponseDto } from "../../application/commands/find-best-route/find-best-route.response.dto";
+import { CountryNotFoundError, DepartureAndArrivalCannotBeSameError } from "../../domain/shipment.error";
 
 @Controller("shipment")
 export class ShipmentController {
@@ -17,12 +17,14 @@ export class ShipmentController {
     @Param("countryDeparture") countryDeparture: string,
     @Param("countryArrival") countryArrival: string,
   ): Promise<FindBestRouteResponseDto> {
-    const error = validateCountries(countryDeparture, countryArrival);
-    if (error) {
-      throw new BadRequestException(error);
+    try {
+      const command = new FindBestRouteCommand(countryDeparture as CountryEnum, countryArrival as CountryEnum);
+      return await this.commandBus.execute(command);
+    } catch (error) {
+      if (error instanceof CountryNotFoundError || error instanceof DepartureAndArrivalCannotBeSameError)
+        throw new HttpException(error.message, 400);
+      throw error;
     }
-    const command = new FindBestRouteCommand(countryDeparture as CountryEnum, countryArrival as CountryEnum);
-    return await this.commandBus.execute(command);
   }
 
   @Get("/list-countries")
