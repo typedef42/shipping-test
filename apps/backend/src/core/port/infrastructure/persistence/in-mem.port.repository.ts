@@ -48,4 +48,8 @@ export class InMemPortRepository implements PortRepository {
   async list(): Promise<Port[]> {
     return Array.from(this.entityMap.values());
   }
+
+  async listCountries(): Promise<string[]> {
+    return Object.values(CountryEnum);
+  }
 }

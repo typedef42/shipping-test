@@ -32,4 +32,9 @@ export class PortController {
   async listPorts(): Promise<any> {
     return this.portRepository.list();
   }
+
+  @Get("/listCountries")
+  async listCountries(): Promise<string[]> {
+    return this.portRepository.listCountries();
+  }
 }
