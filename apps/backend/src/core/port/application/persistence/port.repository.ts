@@ -8,4 +8,5 @@ export const PORT_REPOSITORY = Symbol();
 export interface PortRepository {
   findByName(portName: string): Promise<Port | undefined>;
   list(): Promise<Port[]>;
+  listCountries(): Promise<string[]>;
 }

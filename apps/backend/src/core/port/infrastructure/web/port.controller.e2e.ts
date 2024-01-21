@@ -51,4 +51,16 @@ describe("PortController (e2e)", () => {
         });
     });
   });
+
+  describe("/port/listCountries", () => {
+    it("should return a list of countries", () => {
+      return request(app.getHttpServer())
+        .get("/port/listCountries")
+        .expect(200)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(Array.isArray(res.body)).toBe(true);
+        });
+    });
+  });
 });
